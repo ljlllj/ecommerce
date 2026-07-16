@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>登录 - 优品商城</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="header">
+  <div class="container">
+    <a href="index.html" class="logo">优品<span>商城</span></a>
+    <nav class="nav">
+      <a href="index.html">首页</a>
+      <a href="products.html">全部商品</a>
+      <a href="about.html">品牌故事</a>
+      <a href="contact.html">联系我们</a>
+    </nav>
+    <div class="header-actions">
+      <a href="cart.html" class="cart-icon">🛒<span class="cart-badge" id="cartBadge" style="display:none">0</span></a>
+      <a href="login.html" class="btn btn-outline btn-sm">登录</a>
+    </div>
+  </div>
+</header>
+
+<div class="auth-container" id="loginForm">
+  <h2>👋 欢迎回来</h2>
+  <p class="subtitle">登录你的优品商城账号</p>
+  <form id="loginFormEl" novalidate>
+    <div class="form-group" id="emailGroup">
+      <label for="loginEmail">邮箱</label>
+      <input type="email" id="loginEmail" placeholder="请输入邮箱地址">
+      <span class="error-msg" id="emailError"></span>
+    </div>
+    <div class="form-group" id="passwordGroup">
+      <label for="loginPassword">密码</label>
+      <input type="password" id="loginPassword" placeholder="请输入密码（至少6位）">
+      <span class="error-msg" id="passwordError"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">登 录</button>
+  </form>
+  <div class="switch">
+    还没有账号？<a href="#" onclick="toggleAuth()">立即注册</a>
+  </div>
+</div>
+
+<div class="auth-container" id="registerForm" style="display:none;">
+  <h2>📝 创建账号</h2>
+  <p class="subtitle">注册优品商城，开启品质生活</p>
+  <form id="registerFormEl" novalidate>
+    <div class="form-group" id="regNameGroup">
+      <label for="regName">用户名</label>
+      <input type="text" id="regName" placeholder="请输入用户名（2-20位）">
+      <span class="error-msg" id="regNameError"></span>
+    </div>
+    <div class="form-group" id="regEmailGroup">
+      <label for="regEmail">邮箱</label>
+      <input type="email" id="regEmail" placeholder="请输入邮箱地址">
+      <span class="error-msg" id="regEmailError"></span>
+    </div>
+    <div class="form-group" id="regPasswordGroup">
+      <label for="regPassword">密码</label>
+      <input type="password" id="regPassword" placeholder="请设置密码（至少6位）">
+      <span class="error-msg" id="regPasswordError"></span>
+    </div>
+    <div class="form-group" id="regConfirmGroup">
+      <label for="regConfirm">确认密码</label>
+      <input type="password" id="regConfirm" placeholder="请再次输入密码">
+      <span class="error-msg" id="regConfirmError"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">注 册</button>
+  </form>
+  <div class="switch">
+    已有账号？<a href="#" onclick="toggleAuth()">立即登录</a>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4>关于优品商城</h4>
+        <p>优品商城致力于为消费者提供高品质、高性价比的精选商品。</p>
+      </div>
+      <div class="footer-col">
+        <h4>快速链接</h4>
+        <ul>
+          <li><a href="about.html">品牌故事</a></li>
+          <li><a href="contact.html">联系我们</a></li>
+          <li><a href="products.html">全部商品</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>联系方式</h4>
+        <p>📧 service@youpin.com</p>
+        <p>📞 400-888-6666</p>
+        <p>📍 杭州市西湖区科技园路88号</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 优品商城 版权所有 | 网页设计课程大作业</p>
+    </div>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/main.js"></script>
+<script>
+  window.toggleAuth = function() {
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    if (loginForm.style.display === 'none') {
+      loginForm.style.display = 'block';
+      registerForm.style.display = 'none';
+    } else {
+      loginForm.style.display = 'none';
+      registerForm.style.display = 'block';
+    }
+  };
+
+  function showError(groupId, errorId, msg) {
+    document.getElementById(groupId).classList.add('error');
+    document.getElementById(errorId).textContent = msg;
+  }
+
+  function clearError(groupId, errorId) {
+    document.getElementById(groupId).classList.remove('error');
+    document.getElementById(errorId).textContent = '';
+  }
+
+  // 登录验证
+  document.getElementById('loginFormEl').addEventListener('submit', function(e) {
+    e.preventDefault();
+    let valid = true;
+    const email = document.getElementById('loginEmail').value.trim();
+
+    if (!email) {
+      showError('emailGroup', 'emailError', '请输入邮箱地址');
+      valid = false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      showError('emailGroup', 'emailError', '请输入有效的邮箱地址');
+      valid = false;
+    } else {
+      clearError('emailGroup', 'emailError');
+    }
+
+    const password = document.getElementById('loginPassword').value;
+    if (!password) {
+      showError('passwordGroup', 'passwordError', '请输入密码');
+      valid = false;
+    } else if (password.length < 6) {
+      showError('passwordGroup', 'passwordError', '密码至少6位');
+      valid = false;
+    } else {
+      clearError('passwordGroup', 'passwordError');
+    }
+
+    if (valid) {
+      localStorage.setItem('ecommerce_user', JSON.stringify({ email, loggedIn: true }));
+      showToast('登录成功！');
+      setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+    }
+  });
+
+  // 注册验证
+  document.getElementById('registerFormEl').addEventListener('submit', function(e) {
+    e.preventDefault();
+    let valid = true;
+    const name = document.getElementById('regName').value.trim();
+
+    if (!name) {
+      showError('regNameGroup', 'regNameError', '请输入用户名');
+      valid = false;
+    } else if (name.length < 2 || name.length > 20) {
+      showError('regNameGroup', 'regNameError', '用户名需2-20个字符');
+      valid = false;
+    } else {
+      clearError('regNameGroup', 'regNameError');
+    }
+
+    const email = document.getElementById('regEmail').value.trim();
+    if (!email) {
+      showError('regEmailGroup', 'regEmailError', '请输入邮箱地址');
+      valid = false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      showError('regEmailGroup', 'regEmailError', '请输入有效的邮箱地址');
+      valid = false;
+    } else {
+      clearError('regEmailGroup', 'regEmailError');
+    }
+
+    const password = document.getElementById('regPassword').value;
+    if (!password) {
+      showError('regPasswordGroup', 'regPasswordError', '请设置密码');
+      valid = false;
+    } else if (password.length < 6) {
+      showError('regPasswordGroup', 'regPasswordError', '密码至少6位');
+      valid = false;
+    } else {
+      clearError('regPasswordGroup', 'regPasswordError');
+    }
+
+    const confirm = document.getElementById('regConfirm').value;
+    if (!confirm) {
+      showError('regConfirmGroup', 'regConfirmError', '请确认密码');
+      valid = false;
+    } else if (confirm !== password) {
+      showError('regConfirmGroup', 'regConfirmError', '两次密码输入不一致');
+      valid = false;
+    } else {
+      clearError('regConfirmGroup', 'regConfirmError');
+    }
+
+    if (valid) {
+      localStorage.setItem('ecommerce_user', JSON.stringify({ name, email, loggedIn: true }));
+      showToast('注册成功！欢迎加入优品商城');
+      setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+    }
+  });
+
+  // 实时清除错误
+  document.querySelectorAll('input').forEach(input => {
+    input.addEventListener('input', function() {
+      const group = this.closest('.form-group');
+      if (group) group.classList.remove('error');
+    });
+  });
+</script>
+
+</body>
+</html>

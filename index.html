@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>优品商城 - 发现好物</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="container">
+    <a href="index.html" class="logo">优品<span>商城</span></a>
+    <nav class="nav">
+      <a href="index.html" class="active">首页</a>
+      <a href="products.html">全部商品</a>
+      <a href="about.html">品牌故事</a>
+      <a href="contact.html">联系我们</a>
+    </nav>
+    <div class="header-actions">
+      <a href="cart.html" class="cart-icon">🛒<span class="cart-badge" id="cartBadge" style="display:none">0</span></a>
+      <a href="login.html" class="btn btn-outline btn-sm">登录</a>
+    </div>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container">
+    <h1>品质生活<br>从这里开始</h1>
+    <p>精选全球好物，为你打造精致生活方式。新品限时优惠，满299包邮。</p>
+    <a href="products.html" class="btn btn-primary">立即选购 →</a>
+  </div>
+</section>
+
+<!-- 推荐商品 -->
+<section class="container">
+  <div class="section-title">
+    <h2>🔥 热门推荐</h2>
+    <p>大家都在买的精选好物</p>
+  </div>
+  <div class="product-grid" id="featuredProducts"></div>
+</section>
+
+<!-- 新品上架 -->
+<section class="container">
+  <div class="section-title">
+    <h2>🆕 新品上架</h2>
+    <p>最新到货，抢先体验</p>
+  </div>
+  <div class="product-grid" id="newProducts"></div>
+</section>
+
+<!-- 分类入口 -->
+<section class="container">
+  <div class="section-title">
+    <h2>📂 按分类浏览</h2>
+    <p>快速找到你想要的</p>
+  </div>
+  <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:20px; margin-bottom:60px;" id="categoryNav">
+    <a href="products.html?category=数码" class="value-card">
+      <div class="icon">💻</div>
+      <h4>数码电子</h4>
+      <p>智能科技好物</p>
+    </a>
+    <a href="products.html?category=家居" class="value-card">
+      <div class="icon">🏠</div>
+      <h4>家居生活</h4>
+      <p>温馨居家良品</p>
+    </a>
+    <a href="products.html?category=服饰" class="value-card">
+      <div class="icon">👔</div>
+      <h4>服饰配饰</h4>
+      <p>时尚穿搭精选</p>
+    </a>
+    <a href="products.html?category=箱包" class="value-card">
+      <div class="icon">🎒</div>
+      <h4>箱包出行</h4>
+      <p>旅行必备好物</p>
+    </a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4>关于优品商城</h4>
+        <p>优品商城致力于为消费者提供高品质、高性价比的精选商品。我们严格把控每一件商品的质量，让你买得放心、用得舒心。</p>
+      </div>
+      <div class="footer-col">
+        <h4>快速链接</h4>
+        <ul>
+          <li><a href="about.html">品牌故事</a></li>
+          <li><a href="contact.html">联系我们</a></li>
+          <li><a href="products.html">全部商品</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>联系方式</h4>
+        <p>📧 service@youpin.com</p>
+        <p>📞 400-888-6666</p>
+        <p>📍 杭州市西湖区科技园路88号</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 优品商城 版权所有 | 网页设计课程大作业</p>
+    </div>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/main.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // 热门推荐：前6个商品
+    const featured = products.slice(0, 6);
+    document.getElementById('featuredProducts').innerHTML = featured.map(createProductCard).join('');
+
+    // 新品上架：badge为"新品"的商品 + 后6个
+    const newProducts = [...products.filter(p => p.badge === '新品'), ...products.slice(8, 12)];
+    document.getElementById('newProducts').innerHTML = newProducts.slice(0, 6).map(createProductCard).join('');
+  });
+</script>
+
+</body>
+</html>

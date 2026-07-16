@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>购物车 - 优品商城</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="header">
+  <div class="container">
+    <a href="index.html" class="logo">优品<span>商城</span></a>
+    <nav class="nav">
+      <a href="index.html">首页</a>
+      <a href="products.html">全部商品</a>
+      <a href="about.html">品牌故事</a>
+      <a href="contact.html">联系我们</a>
+    </nav>
+    <div class="header-actions">
+      <a href="cart.html" class="cart-icon">🛒<span class="cart-badge" id="cartBadge" style="display:none">0</span></a>
+      <a href="login.html" class="btn btn-outline btn-sm">登录</a>
+    </div>
+  </div>
+</header>
+
+<div class="page-header">
+  <div class="container">
+    <h1>🛒 购物车</h1>
+    <div class="breadcrumb"><a href="index.html">首页</a> / 购物车</div>
+  </div>
+</div>
+
+<div class="container" style="margin-bottom:60px;">
+  <div id="cartContent"></div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4>关于优品商城</h4>
+        <p>优品商城致力于为消费者提供高品质、高性价比的精选商品。</p>
+      </div>
+      <div class="footer-col">
+        <h4>快速链接</h4>
+        <ul>
+          <li><a href="about.html">品牌故事</a></li>
+          <li><a href="contact.html">联系我们</a></li>
+          <li><a href="products.html">全部商品</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>联系方式</h4>
+        <p>📧 service@youpin.com</p>
+        <p>📞 400-888-6666</p>
+        <p>📍 杭州市西湖区科技园路88号</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 优品商城 版权所有 | 网页设计课程大作业</p>
+    </div>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/main.js"></script>
+<script>
+  function renderCart() {
+    const cart = getCart();
+    const container = document.getElementById('cartContent');
+
+    if (cart.length === 0) {
+      container.innerHTML = `
+        <div class="cart-empty">
+          <div class="icon">🛒</div>
+          <h2>购物车是空的</h2>
+          <p>快去挑选喜欢的商品吧~</p>
+          <a href="products.html" class="btn btn-primary">去逛逛</a>
+        </div>`;
+      return;
+    }
+
+    let rows = '';
+    cart.forEach(item => {
+      const product = products.find(p => p.id === item.id);
+      if (!product) return;
+      const subtotal = product.price * item.quantity;
+      rows += `
+        <tr>
+          <td>
+            <a href="product.html?id=${product.id}" style="display:flex;align-items:center;gap:12px;">
+              <span style="font-size:2rem;background:${product.bg};border-radius:8px;padding:8px;">${product.emoji}</span>
+              <span style="text-align:left;">${product.name}</span>
+            </a>
+          </td>
+          <td>${formatPrice(product.price)}</td>
+          <td>
+            <div class="quantity-selector" style="justify-content:center;margin-bottom:0;">
+              <button onclick="changeCartQty(${product.id}, ${item.quantity - 1})">−</button>
+              <input type="number" value="${item.quantity}" min="1" max="99"
+                onchange="changeCartQty(${product.id}, parseInt(this.value))"
+                style="width:50px;">
+              <button onclick="changeCartQty(${product.id}, ${item.quantity + 1})">+</button>
+            </div>
+          </td>
+          <td style="font-weight:600;">${formatPrice(subtotal)}</td>
+          <td>
+            <button class="btn btn-danger btn-sm" onclick="removeItem(${product.id})">删除</button>
+          </td>
+        </tr>`;
+    });
+
+    const total = getCartTotal();
+
+    container.innerHTML = `
+      <table class="cart-table">
+        <thead>
+          <tr><th style="text-align:left;padding-left:24px;">商品</th><th>单价</th><th>数量</th><th>小计</th><th>操作</th></tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <div class="cart-summary">
+        <div>
+          <button class="btn btn-danger btn-sm" onclick="clearCart()">清空购物车</button>
+        </div>
+        <div class="total">合计：<span>${formatPrice(total)}</span></div>
+        <button class="btn btn-primary" onclick="checkout()">去结算</button>
+      </div>`;
+  }
+
+  window.changeCartQty = function(productId, quantity) {
+    if (isNaN(quantity) || quantity < 1) quantity = 1;
+    if (quantity > 99) quantity = 99;
+    updateCartQuantity(productId, quantity);
+    renderCart();
+  };
+
+  window.removeItem = function(productId) {
+    removeFromCart(productId);
+    renderCart();
+    showToast('已从购物车移除');
+  };
+
+  window.clearCart = function() {
+    if (confirm('确定要清空购物车吗？')) {
+      saveCart([]);
+      renderCart();
+      showToast('购物车已清空');
+    }
+  };
+
+  window.checkout = function() {
+    const orderId = 'ORD' + Date.now().toString(36).toUpperCase();
+    const order = {
+      id: orderId,
+      items: getCart(),
+      total: getCartTotal(),
+      date: new Date().toISOString(),
+      status: 'pending'
+    };
+    const orders = JSON.parse(localStorage.getItem('ecommerce_orders') || '[]');
+    orders.unshift(order);
+    localStorage.setItem('ecommerce_orders', JSON.stringify(orders));
+    saveCart([]);
+    renderCart();
+    showToast('下单成功！订单号：' + orderId);
+    setTimeout(() => { window.location.href = 'orders.html'; }, 2000);
+  };
+
+  document.addEventListener('DOMContentLoaded', renderCart);
+</script>
+
+</body>
+</html>
